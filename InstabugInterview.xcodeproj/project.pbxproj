@@ -33,9 +33,9 @@
 		CEAF35382A86AA0E003759B1 /* NetworkStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF35372A86AA0E003759B1 /* NetworkStorage.swift */; };
 		CEAF353A2A87D3B7003759B1 /* NetworkStorageMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF35392A87D3B7003759B1 /* NetworkStorageMock.swift */; };
 		CEAF353E2A87E00E003759B1 /* NetowrkStorageTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF353D2A87E00E003759B1 /* NetowrkStorageTest.swift */; };
-		CEAF35402A87E23D003759B1 /* CoreDataManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF353F2A87E23D003759B1 /* CoreDataManagerMock.swift */; };
 		CEAF35422A87E891003759B1 /* NetworkModelMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF35412A87E891003759B1 /* NetworkModelMock.swift */; };
 		CEAF35442A87F2BC003759B1 /* CoreDataManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF35432A87F2BC003759B1 /* CoreDataManagerProtocol.swift */; };
+		CEE7DC492A89300100AD1EC0 /* CoreDataManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE7DC482A89300100AD1EC0 /* CoreDataManagerMock.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,9 +106,9 @@
 		CEAF35372A86AA0E003759B1 /* NetworkStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStorage.swift; sourceTree = "<group>"; };
 		CEAF35392A87D3B7003759B1 /* NetworkStorageMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStorageMock.swift; sourceTree = "<group>"; };
 		CEAF353D2A87E00E003759B1 /* NetowrkStorageTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetowrkStorageTest.swift; sourceTree = "<group>"; };
-		CEAF353F2A87E23D003759B1 /* CoreDataManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerMock.swift; sourceTree = "<group>"; };
 		CEAF35412A87E891003759B1 /* NetworkModelMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkModelMock.swift; sourceTree = "<group>"; };
 		CEAF35432A87F2BC003759B1 /* CoreDataManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerProtocol.swift; sourceTree = "<group>"; };
+		CEE7DC482A89300100AD1EC0 /* CoreDataManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerMock.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -221,8 +221,8 @@
 				CEAF35122A8591B9003759B1 /* UrlProtocolMock.swift */,
 				CEAF35232A868400003759B1 /* LimitsNetworkMock.swift */,
 				CEAF35392A87D3B7003759B1 /* NetworkStorageMock.swift */,
-				CEAF353F2A87E23D003759B1 /* CoreDataManagerMock.swift */,
 				CEAF35412A87E891003759B1 /* NetworkModelMock.swift */,
+				CEE7DC482A89300100AD1EC0 /* CoreDataManagerMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -450,7 +450,7 @@
 				CEAF35422A87E891003759B1 /* NetworkModelMock.swift in Sources */,
 				CEAF35242A868400003759B1 /* LimitsNetworkMock.swift in Sources */,
 				24AA93C825AF0F0D007588C7 /* InstabugNetworkClientTests.swift in Sources */,
-				CEAF35402A87E23D003759B1 /* CoreDataManagerMock.swift in Sources */,
+				CEE7DC492A89300100AD1EC0 /* CoreDataManagerMock.swift in Sources */,
 				CEAF35132A8591B9003759B1 /* UrlProtocolMock.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

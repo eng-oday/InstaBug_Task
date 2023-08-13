@@ -10,10 +10,10 @@ import CoreData
 
 class NetworkStorage:NetworkStorageProtocol {
     
-    var coreDataManager:CoreDataManager
+    var coreDataManager:CoreDataManagerProtocol
     var limits:LimitsNetworkProtocol
     
-    init(coreDataManager:CoreDataManager = CoreDataManager.Shared, limits:LimitsNetworkProtocol = LimitsNetwork()) {
+    init(coreDataManager:CoreDataManagerProtocol, limits:LimitsNetworkProtocol = LimitsNetwork()) {
         self.coreDataManager    = coreDataManager
         self.limits             = limits
     }
@@ -22,26 +22,28 @@ class NetworkStorage:NetworkStorageProtocol {
         if checkIfRecordAboveLimits(){
             deleteFirstRecord()
         }else {
-            coreDataManager.customViewContext.performAndWait {
-                    let NetworkEntityRecord = NetworkEntity(context: coreDataManager.customViewContext)
-                    // Request
-                    NetworkEntityRecord.httpMethod        = item.httpMethod
-                    NetworkEntityRecord.url               = item.URL
-                    NetworkEntityRecord.requestPayload    = item.payloadRequest
-                    // Response
-                    NetworkEntityRecord.statusCode        = item.statusCode
-                    NetworkEntityRecord.responsePayload   = item.payloadResponse
-                    NetworkEntityRecord.errorDomain       = item.errorDomain
-                    coreDataManager.performSaveOpertaionOnBackground()
-                    completion?(NetworkEntityRecord)
+            coreDataManager.PersistantContainer.newBackgroundContext().perform { [weak self ] in
+                guard let self else {return}
+                let NetworkEntityRecord = NetworkEntity(context: self.coreDataManager.PersistantContainer.newBackgroundContext())
+                // Request
+                NetworkEntityRecord.httpMethod        = item.httpMethod
+                NetworkEntityRecord.url               = item.URL
+                NetworkEntityRecord.requestPayload    = item.payloadRequest
+                // Response
+                NetworkEntityRecord.statusCode        = item.statusCode
+                NetworkEntityRecord.responsePayload   = item.payloadResponse
+                NetworkEntityRecord.errorDomain       = item.errorDomain
+                self.coreDataManager.performSaveOpertaionOnBackground()
+                completion?(NetworkEntityRecord)
             }
         }
     }
     
-    func fetchFromCoreData(completion: (([NetworkModel]) -> Void)) {
-        coreDataManager.fetch { reult in
+    func fetchFromCoreData(completion: @escaping(([NetworkModel]) -> Void)) {
+        coreDataManager.fetch { [weak self] reult in
+            guard let self else {return}
             if case .success(let records) = reult {
-                let netowrkModel = records.map(convertNetworkEntityRecordToNetworkModel(_:))
+                let netowrkModel = records.map(self.convertNetworkEntityRecordToNetworkModel(_:))
                 completion(netowrkModel)
             }
         }
@@ -57,10 +59,11 @@ class NetworkStorage:NetworkStorageProtocol {
     }
     
     private func deleteFirstRecord() {
-        coreDataManager.fetch { result in
+        coreDataManager.fetch { [weak self] result in
+            guard let self else {return}
             if case .success(let success) = result {
                 if let firstRecordMustDeleted = success.first {
-                    coreDataManager.delete(item: firstRecordMustDeleted)
+                    self.coreDataManager.delete(item: firstRecordMustDeleted)
                 }
             }
         }

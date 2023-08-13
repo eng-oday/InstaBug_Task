@@ -9,13 +9,13 @@ import Foundation
 
 public class NetworkClient {
 
-    public static var shared = NetworkClient()
+    //public static var shared = NetworkClient()
     private let networkStorage: NetworkStorageProtocol
     private var urlSession:URLSession
     private var limits:LimitsNetworkProtocol
     
     
-    init(urlSession: URLSession = .shared , limits:LimitsNetworkProtocol = LimitsNetwork(),networkStorage:NetworkStorageProtocol = NetworkStorage()) {
+    init(urlSession: URLSession = .shared , limits:LimitsNetworkProtocol = LimitsNetwork(),networkStorage:NetworkStorageProtocol) {
         self.urlSession         = urlSession
         self.limits             = limits
         self.networkStorage     = networkStorage

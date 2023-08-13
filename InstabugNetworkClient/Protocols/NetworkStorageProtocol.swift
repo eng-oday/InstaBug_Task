@@ -9,6 +9,6 @@ import Foundation
 import CoreData
 
 protocol NetworkStorageProtocol {
-    func fetchFromCoreData(completion: (([NetworkModel]) -> Void))
+    func fetchFromCoreData(completion: @escaping(([NetworkModel]) -> Void))
     func saveInCoreData(_ item: NetworkModel, completion: ((NetworkEntity) -> Void)?)
 }

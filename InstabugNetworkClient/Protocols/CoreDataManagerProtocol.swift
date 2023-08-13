@@ -9,12 +9,11 @@ import Foundation
 import CoreData
 
 
-//protocol CoreDataManagerProtocol {
-//    var persistentContainer:NSPersistentContainer {get}
-//    var customViewContext:NSManagedObjectContext {get}
-//    var persistentCoordinator:NSPersistentStoreCoordinator {get}
-//    func performSaveOpertaionOnBackground()
-//    func fetch(completion: ((Result<[NetworkEntity], Error>) -> Void))
-//    func delete(item: NetworkEntity)
-//    func getRecordCount(completion: @escaping (Int) -> Void)
-//}
+protocol CoreDataManagerProtocol {
+    var PersistantContainer: NSPersistentContainer {get}
+    var managedObjectModel: NSManagedObjectModel {get}
+    func getRecordCount(completion: @escaping (Int) -> Void)
+    func delete(item: NetworkEntity)
+    func fetch(completion: (@escaping(Result<[NetworkEntity], Error>) -> Void))
+    func performSaveOpertaionOnBackground()
+}

@@ -8,11 +8,17 @@
 import Foundation
 import CoreData
 
-class CoreDataManager {
+class CoreDataManager:CoreDataManagerProtocol {
+    var PersistantContainer: NSPersistentContainer =  NSPersistentContainer(name: Constants.modelName)
+
+    lazy var managedObjectModel: NSManagedObjectModel = {
+            let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle(for: type(of: self))] )!
+            return managedObjectModel
+        }()
     
-   static let Shared = CoreDataManager()
-    var persistentContainer = NSPersistentContainer(name: Constants.modelName)
-    var customViewContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+    lazy var backgroundContext: NSManagedObjectContext = {
+            return self.PersistantContainer.newBackgroundContext()
+        }()
      
     
     // MARK: - Init
@@ -22,26 +28,24 @@ class CoreDataManager {
 
     
     private func setPersistentContainer() {
-        let persistentCoordinator = persistentContainer.persistentStoreCoordinator
-        let description     = persistentContainer.persistentStoreDescriptions.first
-        description?.type   = NSSQLiteStoreType
-        
-        persistentContainer.loadPersistentStores { description, error in
+        let container = NSPersistentContainer(name: Constants.modelName, managedObjectModel: self.managedObjectModel)
+            let description = NSPersistentStoreDescription()
+            description.type =  NSSQLiteStoreType            
+            container.persistentStoreDescriptions = [description]
+        PersistantContainer.viewContext.automaticallyMergesChangesFromParent    = true
+        PersistantContainer.loadPersistentStores { description, error in
             guard error == nil else {
                 fatalError("was unable to load store \(error!)")
             }
         }
-        let viewContext                                     = persistentContainer.viewContext
-        //viewContext.automaticallyMergesChangesFromParent    = true
-        customViewContext.mergePolicy                       = NSMergeByPropertyObjectTrumpMergePolicy
-        customViewContext.parent                            = viewContext
     }
     
     func getRecordCount(completion: @escaping (Int) -> Void) {
         let fetchRequest: NSFetchRequest<NetworkEntity> = NetworkEntity.fetchRequest()
-        customViewContext.performAndWait {
+        backgroundContext.perform { [weak self] in
+            guard let self else {return}
             do {
-                let recordCount = try customViewContext.count(for: fetchRequest)
+                let recordCount = try self.backgroundContext.count(for: fetchRequest)
                 completion(recordCount)
             }catch{
                 print("Error fetching record count: \(error)")
@@ -50,10 +54,11 @@ class CoreDataManager {
         }
     }
     
-    func fetch(completion: ((Result<[NetworkEntity], Error>) -> Void)) {
-        customViewContext.performAndWait {
+    func fetch(completion: (@escaping(Result<[NetworkEntity], Error>) -> Void)) {
+        backgroundContext.perform {[weak self] in
+            guard let self else {return}
             do {
-                let items = try customViewContext.fetch(NetworkEntity.fetchRequest())
+                let items = try self.backgroundContext.fetch(NetworkEntity.fetchRequest())
                 completion(.success(items))
             } catch {
                 completion(.failure(error))
@@ -62,23 +67,25 @@ class CoreDataManager {
     }
     
     func delete(item: NetworkEntity) {
-        customViewContext.performAndWait {
-            customViewContext.delete(item)
-                performSaveOpertaionOnBackground()
+        backgroundContext.perform {[weak self] in
+            guard let self else {return}
+            self.backgroundContext.delete(item)
+            self.performSaveOpertaionOnBackground()
         }
     }
     
     func performSaveOpertaionOnBackground() {
-        customViewContext.performAndWait {
-            performSaveOpertaion()
+        backgroundContext.perform {[weak self] in
+            guard let self else {return}
+            self.performSaveOpertaion()
         }
     }
     
     private func performSaveOpertaion() {
-        if customViewContext.hasChanges {
+        if backgroundContext.hasChanges {
             do {
-                try customViewContext.save()
-                try persistentContainer.viewContext.save()
+                try backgroundContext.save()
+                try PersistantContainer.viewContext.save()
             }
             catch {
                 print("Error in save background \(error)")

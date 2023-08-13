@@ -11,17 +11,24 @@ import Foundation
 class NetworkStorageMock:NetworkStorageProtocol{
     
     var netowrkModel:NetworkModel
+//
+//    var coreDataManager:CoreDataManager
+//    var limits:LimitsNetworkProtocol
     
     init(netowrkModel: NetworkModel) {
+//        self.coreDataManager    = coreDataManager
+//        self.limits             = limits
         self.netowrkModel = netowrkModel
+
     }
-    
     func fetchFromCoreData(completion: (([InstabugNetworkClient.NetworkModel]) -> Void)) {
-        completion([netowrkModel])
+//        coreDataManager.fetch { result in
+//            print(result)
+//        }
     }
     
     func saveInCoreData(_ item: InstabugNetworkClient.NetworkModel, completion: ((InstabugNetworkClient.NetworkEntity) -> Void)?) {
-        netowrkModel = item
+//        coreDataManager.performSaveOpertaionOnBackground()
     }
     
     

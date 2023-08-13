@@ -2,37 +2,57 @@
 //  CoreDataManagerMock.swift
 //  InstabugNetworkClientTests
 //
-//  Created by user on 12/08/2023.
+//  Created by user on 13/08/2023.
 //
 
 import Foundation
 import CoreData
-@testable import InstabugNetworkClient
 
-class CoreDataManagerMock:CoreDataManager{
+@testable import InstabugNetworkClient
+class CoreDataManagerMock: CoreDataManagerProtocol {
+
     
-    override init() {
-            super.init()
+    
+    lazy var PersistantContainer: NSPersistentContainer = {
             
-            persistentContainer = NSPersistentContainer(name: Constants.modelName)
-            let description = persistentContainer.persistentStoreDescriptions.first
-            description?.type = NSInMemoryStoreType
-    
-            persistentContainer.loadPersistentStores { description, error in
-                guard error == nil else {
-                    fatalError("was unable to load store \(error!)")
+        let container = NSPersistentContainer(name: Constants.modelName, managedObjectModel: self.managedObjectModel)
+            let description = NSPersistentStoreDescription()
+            description.type = NSInMemoryStoreType
+            description.shouldAddStoreAsynchronously = false // Make it simpler in test env
+            
+            container.persistentStoreDescriptions = [description]
+            container.loadPersistentStores { (description, error) in
+                // Check if the data store is in memory
+                precondition( description.type == NSInMemoryStoreType )
+                                            
+                // Check if creating container wrong
+                if let error = error {
+                    fatalError("Create an in-mem coordinator failed \(error)")
                 }
             }
+            return container
+        }()
     
-//            let mainContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-//            mainContext.automaticallyMergesChangesFromParent = true
-//            mainContext.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
+    lazy var managedObjectModel: NSManagedObjectModel = {
+            let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle(for: type(of: self))] )!
+            return managedObjectModel
+        }()
     
-            customViewContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-            customViewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-            customViewContext.parent = persistentContainer.viewContext
-        }
+    func delete(item: InstabugNetworkClient.NetworkEntity) {
+        
+    }
+    
+    func fetch(completion: @escaping ((Result<[InstabugNetworkClient.NetworkEntity], Error>) -> Void)) {
+        
+    }
+    
+    func performSaveOpertaionOnBackground() {
+        
+    }
+    
+    func getRecordCount(completion: @escaping (Int) -> Void) {
+        
+    }
     
     
 }
-
